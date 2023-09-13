@@ -1,6 +1,6 @@
 // GET REQUEST version 1 - long version
 // function getTodos() {
-//   axios({          // it has an interior promise
+//   axios({          // it returns a promise
 //     method: 'get',
 //     url: 'https://jsonplaceholder.typicode.com/todos',
 //     params: {
