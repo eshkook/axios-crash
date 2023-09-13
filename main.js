@@ -22,6 +22,7 @@ function getTodos() {
     .catch(err => console.error(err));
 }
 
+
 // POST REQUEST
 function addTodo() {
   axios
