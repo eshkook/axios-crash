@@ -1,6 +1,22 @@
-// GET REQUEST
+// GET REQUEST version 1 - long version
+// function getTodos() {
+//   axios({          // it has an interior promise
+//     method: 'get',
+//     url: 'https://jsonplaceholder.typicode.com/todos',
+//     params: {
+//       _limit: 5 // equivalent to adding the url the '?_limit=5'
+//     }
+//   })
+//   .then(res => showOutput(res))
+//   .catch(err => console.error(err))
+// }
+
+// GET REQUEST version 2 - short version
 function getTodos() {
-  console.log('GET Request');
+  axios
+  .get('https://jsonplaceholder.typicode.com/todos?_limit=5') // the .get is unnecesary as get is the default
+  .then(res => showOutput(res))
+  .catch(err => console.error(err))
 }
 
 // POST REQUEST
