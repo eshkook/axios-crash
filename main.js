@@ -6,7 +6,24 @@
 axios.defaults.headers.common['X-Auth-Token'] = 
 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
 
-// GET REQUEST version 1 - long version
+// INTERCEPTING REQUESTS & RESPONSES
+axios.interceptors.request.use( // this will be triggered automatically when sending any request
+  config => { // we could choose other fields of the request, like data
+    console.log(
+      `${config.method.toUpperCase()} request sent to ${config.url} at ${new Date().getTime()}`
+    )
+
+    return config
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// request types:
+
+// GET REQUEST - long version
 // function getTodos() {
 //   axios({          // it returns a promise
 //     method: 'get',
@@ -19,12 +36,12 @@ axios.defaults.headers.common['X-Auth-Token'] =
 //   .catch(err => console.error(err))
 // }
 
-// GET REQUEST version 2 - short version
+// GET REQUEST 
 function getTodos() {
   axios
   .get('https://jsonplaceholder.typicode.com/todos?_limit=5', { timeout: 5000 }) // the timeout (in miliseconds) will cancel a 'stuck' request
   .then(res => showOutput(res))
-  .catch(err => console.error(err))
+  // .catch(err => console.error(err))
 }
 
 // POST REQUEST
@@ -170,20 +187,6 @@ function axiosInstance() {
   .catch(err => console.error(err))
 
 }
-
-// INTERCEPTING REQUESTS & RESPONSES
-axios.interceptors.request.use( // this will be triggered automatically when sendind any request
-  config => { // we could choose other fields of the request, like data
-    console.log(
-      `${config.method.toUpperCase()} request sent to ${config.url} at ${new Date().getTime()}`
-    )
-
-    return config
-  },
-  error => {
-    return Promise.reject(error)
-  }
-)
 
 // Show output in browser
 function showOutput(res) {
