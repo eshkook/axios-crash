@@ -113,7 +113,7 @@ function errorHandling() {
   axios
     .get('https://jsonplaceholder.typicode.com/todoss', {
       validateStatus: function(status) {
-        return status <= 50 // this way, only status above 500 will trigger the regect (and the catch)
+        return status <= 4000 // this way, only status above 500 will trigger the catch
       }
     }) 
     .then(res => showOutput(res))
