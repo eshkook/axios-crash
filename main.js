@@ -1,3 +1,9 @@
+// AXIOS GLOBALS
+// get jwt from https://jwt.io/
+// it attaches to whatever request you make
+axios.defaults.headers.common['X-Auth-Token'] = 
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+
 // GET REQUEST version 1 - long version
 // function getTodos() {
 //   axios({          // it returns a promise
@@ -57,18 +63,47 @@ function getData() {
     axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5'),
     axios.get('https://jsonplaceholder.typicode.com/posts?_limit=5')
   ]) 
-   .then(res => showOutput(res[0])) // could also be res[1] as there are 2 elements to this response
+  //  .then(res => showOutput(res[0])) // could also be res[1] as there are 2 elements to this response
+  .then(axios.spread((todos, posts) => showOutput(posts)))
    .catch(err => console.error(err))
 }
 
 // CUSTOM HEADERS
-function customHeaders() {
-  console.log('Custom Headers');
+// suppose you need authorization to perform 'post' requests
+function customHeaders() { 
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'sometoken' // some JWT (json web token)
+    }
+  }
+  
+  axios
+  .post('https://jsonplaceholder.typicode.com/todos', {
+    title: 'New Todo',
+    completed: false
+  }, config)
+  .then(res => showOutput(res))
+  .catch(err => console.error(err))
 }
 
 // TRANSFORMING REQUESTS & RESPONSES
 function transformResponse() {
-  console.log('Transform Response');
+  const options = {
+    method: 'post',
+    url: 'https://jsonplaceholder.typicode.com/todos',
+    data: {
+      title: 'hellow world'
+    },
+    transformResponse: axios.defaults.transformResponse.concat(data => {
+      data.title = data.title.toUpperCase()
+      return data 
+    })
+  }
+  
+  axios(options)
+  .then(res => showOutput(res))
+  .catch(err => console.error(err))
 }
 
 // ERROR HANDLING
@@ -82,6 +117,18 @@ function cancelToken() {
 }
 
 // INTERCEPTING REQUESTS & RESPONSES
+axios.interceptors.request.use( // this will be triggered automatically when sendind any request
+  config => { // we could choose other fields of the request, like data
+    console.log(
+      `${config.method.toUpperCase()} request sent to ${config.url} at ${new Date().getTime()}`
+    )
+
+    return config
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
 
 // AXIOS INSTANCES
 
