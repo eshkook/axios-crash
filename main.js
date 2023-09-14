@@ -33,7 +33,7 @@ function addTodo() {
 // PUT/PATCH REQUEST    (Put replaces an element of data completely, where patch just adjusts parts of it)
 function updateTodo() {
   axios
-  .patch('https://jsonplaceholder.typicode.com/todos/1', { // put can be replaced with patch and then this data 
+  .put('https://jsonplaceholder.typicode.com/todos/1', { // put can be replaced with patch and then this data 
                                                          // element is just adjusted and not replaced
     title: 'Updated Todo',
     completed: true
@@ -44,12 +44,21 @@ function updateTodo() {
 
 // DELETE REQUEST
 function removeTodo() {
-  console.log('DELETE Request');
+  axios
+  .delete('https://jsonplaceholder.typicode.com/todos/1')
+  .then(res => showOutput(res))
+  .catch(err => console.error(err))
 }
 
 // SIMULTANEOUS DATA
 function getData() {
-  console.log('Simultaneous Request');
+  axios
+  .all([  
+    axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5'),
+    axios.get('https://jsonplaceholder.typicode.com/posts?_limit=5')
+  ]) 
+   .then(res => showOutput(res[0])) // could also be res[1] as there are 2 elements to this response
+   .catch(err => console.error(err))
 }
 
 // CUSTOM HEADERS
