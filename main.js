@@ -1,3 +1,5 @@
+// the api we will test is 'https://jsonplaceholder.typicode.com/'
+
 // AXIOS GLOBALS
 // get jwt from https://jwt.io/
 // it attaches to whatever request you make
@@ -20,7 +22,7 @@ axios.defaults.headers.common['X-Auth-Token'] =
 // GET REQUEST version 2 - short version
 function getTodos() {
   axios
-  .get('https://jsonplaceholder.typicode.com/todos?_limit=5') // the .get is unnecesary as get is the default
+  .get('https://jsonplaceholder.typicode.com/todos?_limit=5', { timeout: 5000 }) // the timeout (in miliseconds) will cancel a 'stuck' request
   .then(res => showOutput(res))
   .catch(err => console.error(err))
 }
@@ -108,12 +110,65 @@ function transformResponse() {
 
 // ERROR HANDLING
 function errorHandling() {
-  console.log('Error Handling');
+  axios
+    .get('https://jsonplaceholder.typicode.com/todoss', {
+      validateStatus: function(status) {
+        return status <= 50 // this way, only status above 500 will trigger the regect (and the catch)
+      }
+    }) 
+    .then(res => showOutput(res))
+    .catch(err => {
+      if (err.response) {
+        // server responded with a status other than 200 range
+        console.log(err.response.data) 
+        console.log(err.response.status)
+        console.log(err.response.headers)
+
+        if (err.response.status === 404) {
+          alert('Error: Page Not Found')
+        } else if (err.request) {
+          // request was made but no response
+          console.error(err.request)
+        } else {
+          console.error(err.message)
+        }
+      }
+    })
 }
 
 // CANCEL TOKEN
 function cancelToken() {
-  console.log('Cancel Token');
+  const source = axios.CancelToken.source()
+  
+  axios
+  .get('https://jsonplaceholder.typicode.com/todos', {
+    cancelToken: source.token
+  }) 
+  .then(res => showOutput(res))
+  .catch(thrown => {
+    if (axios.isCancel(thrown)) {
+      console.log('Request canceled', thrown.message)
+    }
+  })
+
+  condition_to_cancel_request = true // change it to a condition that you want
+  if (condition_to_cancel_request) { // how can it cancel a request that was submitted earlier? because the request action is asyncronous
+                                     // and if it wasn't completed before we cancel it here then it is relevant
+    source.cancel('Request canceled!')
+  }
+}
+
+// AXIOS INSTANCE
+function axiosInstance() {
+  const axios_instance = axios.create({
+    baseURL: 'https://jsonplaceholder.typicode.com'
+    // more custom settings
+  })
+  
+  axios_instance.get('/todos')
+  .then(res => showOutput(res))
+  .catch(err => console.error(err))
+
 }
 
 // INTERCEPTING REQUESTS & RESPONSES
@@ -129,8 +184,6 @@ axios.interceptors.request.use( // this will be triggered automatically when sen
     return Promise.reject(error)
   }
 )
-
-// AXIOS INSTANCES
 
 // Show output in browser
 function showOutput(res) {
@@ -180,6 +233,7 @@ document
   .addEventListener('click', transformResponse);
 document.getElementById('error').addEventListener('click', errorHandling);
 document.getElementById('cancel').addEventListener('click', cancelToken);
+document.getElementById('instance').addEventListener('click', axiosInstance);
 
 // // AXIOS GLOBALS
 // axios.defaults.headers.common['X-Auth-Token'] =
