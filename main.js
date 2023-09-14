@@ -7,6 +7,7 @@ axios.defaults.headers.common['X-Auth-Token'] =
 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
 
 // INTERCEPTING REQUESTS & RESPONSES
+// A request interceptor allows you to intercept requests before they are sent
 axios.interceptors.request.use( // this will be triggered automatically when sending any request
   config => { // we could choose other fields of the request, like data
     console.log(
@@ -39,9 +40,9 @@ axios.interceptors.request.use( // this will be triggered automatically when sen
 // GET REQUEST 
 function getTodos() {
   axios
-  .get('https://jsonplaceholder.typicode.com/todos?_limit=5', { timeout: 5000 }) // the timeout (in miliseconds) will cancel a 'stuck' request
+  .get('https://jsonplaceholder.typicode.com/todwos?_limit=5', { timeout: 5000 }) // the timeout (in miliseconds) will cancel a 'stuck' request
   .then(res => showOutput(res))
-  // .catch(err => console.error(err))
+  .catch(err => console.error(err))
 }
 
 // POST REQUEST
