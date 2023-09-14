@@ -40,7 +40,7 @@ axios.interceptors.request.use( // this will be triggered automatically when sen
 // GET REQUEST 
 function getTodos() {
   axios
-  .get('https://jsonplaceholder.typicode.com/todwos?_limit=5', { timeout: 5000 }) // the timeout (in miliseconds) will cancel a 'stuck' request
+  .get('https://jsonplaceholder.typicode.com/todos?_limit=5', { timeout: 5000 }) // the timeout (in miliseconds) will cancel a 'stuck' request
   .then(res => showOutput(res))
   .catch(err => console.error(err))
 }
@@ -48,8 +48,8 @@ function getTodos() {
 // POST REQUEST
 function addTodo() {
   axios
-  .post('https://jsonplaceholder.typicode.com/todos', {
-    title: 'New Todo',
+  .post('https://jsonplaceholder.typicode.com/todos', { // we don't provide id, as it is given at the server's house
+    title: 'New Todo', 
     completed: false
   })
   .then(res => showOutput(res))
@@ -131,7 +131,7 @@ function errorHandling() {
   axios
     .get('https://jsonplaceholder.typicode.com/todoss', {
       validateStatus: function(status) {
-        return status <= 4000 // this way, only status above 500 will trigger the catch
+        return status <= 40 // this way, only status above 500 will trigger the catch
       }
     }) 
     .then(res => showOutput(res))
@@ -171,7 +171,7 @@ function cancelToken() {
 
   condition_to_cancel_request = true // change it to a condition that you want
   if (condition_to_cancel_request) { // how can it cancel a request that was submitted earlier? because the request action is asyncronous
-                                     // and if it wasn't completed before we cancel it here then it is relevant
+                                     // and takes a bit time. if it wasn't completed before we cancel it here then it is cancelled
     source.cancel('Request canceled!')
   }
 }
